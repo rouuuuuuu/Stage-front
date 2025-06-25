@@ -1,0 +1,46 @@
+<div class=""container mt-4>
+    <h2>Fournisseurs</h2> 
+    <div *ngIf="isLoading" class="text-center">
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Chargement</span>
+        </div>
+    </div>
+    <div *ngIf="errorMessage" class="alert alert-danger">
+        {{errorMessage}}
+    </div>
+<table *ngIf="!isLoading && !errorMessage " class="table table-striped">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Nom</th>
+      <th>Adresse</th>
+      <th>Email</th>
+      <th>Note</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+</table>
+
+ <h2 class="mt-5">Produits</h2>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nom</th>
+        <th>Catégorie</th>
+        <th>Prix Unitaire</th>
+        <th>Fournisseur</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let p of produits">
+        <td>{{ p.id }}</td>
+        <td>{{ p.nom }}</td>
+        <td>{{ p.categorie }}</td>
+        <td>{{ p.prixUnitaire  }}</td>    # | currency EUR ou TND
+        <td>{{ p.fournisseur }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

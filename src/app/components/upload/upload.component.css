@@ -1,0 +1,33 @@
+.upload-container {
+  max-width: 500px;
+  margin: 2rem auto;
+  padding: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.upload-container input[type="file"] {
+  margin-bottom: 1rem;
+}
+
+.upload-container .file-info {
+  margin: 1rem 0;
+}
+
+.upload-container .progress-bar {
+  margin: 1rem 0;
+}
+
+.upload-container .progress-bar progress {
+  width: 100%;
+}
+
+.upload-container .message {
+  padding: 0.5rem;
+  background: #e6f7e6;
+  border-radius: 4px;
+}
+
+.upload-container .message.error {
+  background: #ffebee;
+}

@@ -59,11 +59,16 @@
           "defaultConfiguration": "production"
         },
         "serve": {
+          
           "builder": "@angular-devkit/build-angular:dev-server",
+          "options":{
+              "proxyConfig":"proxy.conf.json"
+            },
           "configurations": {
             "production": {
               "buildTarget": "FOURNISSEURS:build:production"
             },
+            
             "development": {
               "buildTarget": "FOURNISSEURS:build:development"
             }
@@ -96,5 +101,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": "4e4eedb9-4e5d-4d75-9cea-bb98ece8083c"
   }
 }
