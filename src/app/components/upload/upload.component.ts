@@ -9,7 +9,7 @@ import { HttpEventType } from '@angular/common/http';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './upload.component.html',
-  styleUrls: ['./upload.component.css']  // ✅ Plural, not 'styleUrl'
+  styleUrls: ['./upload.component.css']
 })
 export class UploadComponent {
   selectedFile: File | null = null;

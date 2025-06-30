@@ -1,25 +1,30 @@
-import { Component, OnInit, Input } from '@angular/core';  // Input included
-import { CommonModule, NgIf } from '@angular/common';
+import { Component, OnInit, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Fournisseur } from '../../models/Fournisseurs.model';
 import { FournisseurService } from '../../services/fournisseur.service';
-import { FormsModule } from '@angular/forms'; // <-- ADD THIS
 
 @Component({
   selector: 'app-fournisseur-list',
   standalone: true,
-  imports: [CommonModule,FormsModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './fournisseur-list.component.html',
   styleUrls: ['./fournisseur-list.component.css']
 })
 export class FournisseurListComponent implements OnInit {
-  @Input() searchTerm: string = '';  // Search term input from parent
+  @Input() searchTerm: string = '';
 
-  isLoading = true;
-  errorMessage = '';
   fournisseurs: Fournisseur[] = [];
   editingFournisseur: Fournisseur | null = null;
   editingFournisseurCopy: Fournisseur = {} as Fournisseur;
 
+  isLoading = true;
+  errorMessage = '';
+
+  // Paging variables
+  currentPage = 0;
+  pageSize = 5;
+  totalPages = 0;
 
   constructor(private fournisseurService: FournisseurService) {}
 
@@ -29,9 +34,10 @@ export class FournisseurListComponent implements OnInit {
 
   loadFournisseurs(): void {
     this.isLoading = true;
-    this.fournisseurService.getFournisseur().subscribe({
-      next: (data) => {
-        this.fournisseurs = data;
+    this.fournisseurService.getFournisseursPaged(this.currentPage, this.pageSize).subscribe({
+      next: (pageData) => {
+        this.fournisseurs = pageData.content;
+        this.totalPages = pageData.totalPages;
         this.isLoading = false;
       },
       error: (err) => {
@@ -42,7 +48,7 @@ export class FournisseurListComponent implements OnInit {
     });
   }
 
-  // Filter fournisseurs based on searchTerm (case-insensitive)
+  // You can keep your frontend filtering if you want, but better move to backend filtering later
   get filteredFournisseurs(): Fournisseur[] {
     if (!this.searchTerm.trim()) return this.fournisseurs;
     const term = this.searchTerm.toLowerCase();
@@ -57,7 +63,8 @@ export class FournisseurListComponent implements OnInit {
     if (!confirm('Tu veux vraiment supprimer ce fournisseur ?')) return;
     this.fournisseurService.deleteFournisseur(id).subscribe({
       next: () => {
-        this.fournisseurs = this.fournisseurs.filter(f => f.id !== id);
+        // After deletion, reload current page to sync data
+        this.loadFournisseurs();
       },
       error: (err) => {
         console.error('Erreur lors de la suppression:', err);
@@ -66,42 +73,49 @@ export class FournisseurListComponent implements OnInit {
     });
   }
 
-
-
-
-
-
-saveChanges() {
-  if(this.editingFournisseurCopy) {
-    this.onSave(this.editingFournisseurCopy);
-  }
-}
-
   openModal(fournisseur: Fournisseur) {
-  this.editingFournisseur = fournisseur;
-  this.editingFournisseurCopy = { ...fournisseur }; // Clone it properly for editing
-}
+    this.editingFournisseur = fournisseur;
+    this.editingFournisseurCopy = { ...fournisseur };
+  }
 
-onSave(updated: Fournisseur) {
-  if (!updated || !this.editingFournisseur) return;
+  saveChanges() {
+    if (!this.editingFournisseur) return;
 
-  this.fournisseurService.updateFournisseur(updated.id, updated).subscribe({
-    next: (data) => {
-      const index = this.fournisseurs.findIndex(f => f.id === data.id);
-      if (index !== -1) {
-        this.fournisseurs[index] = data; // Replace in list
+    const idToUpdate = this.editingFournisseur.id;
+    const updated = { ...this.editingFournisseurCopy, id: idToUpdate };
+
+    this.fournisseurService.updateFournisseur(idToUpdate, updated).subscribe({
+      next: (data) => {
+        // Update local list on success
+        const index = this.fournisseurs.findIndex(f => f.id === idToUpdate);
+        if (index !== -1) this.fournisseurs[index] = data;
+
+        this.editingFournisseur = null;
+        this.editingFournisseurCopy = {} as Fournisseur;
+      },
+      error: (err) => {
+        console.error('Update failed:', err);
+        alert("Échec de l'enregistrement.");
       }
-      this.editingFournisseur = null;
-      this.editingFournisseurCopy = {} as Fournisseur;
-    },
-    error: (err) => {
-      console.error('Erreur lors de la mise à jour', err);
-    }
-  });
-}
-
+    });
+  }
 
   closeModal() {
-    this.editingFournisseur = null; // cancel edit
+    this.editingFournisseur = null;
+  }
+
+  // Paging controls
+  prevPage() {
+    if (this.currentPage > 0) {
+      this.currentPage--;
+      this.loadFournisseurs();
+    }
+  }
+
+  nextPage() {
+    if (this.currentPage + 1 < this.totalPages) {
+      this.currentPage++;
+      this.loadFournisseurs();
+    }
   }
 }

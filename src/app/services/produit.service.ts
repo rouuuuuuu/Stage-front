@@ -1,7 +1,14 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Produit } from '../models/Produits.model'; // create this interface if you haven't
+import { Produit } from '../models/Produits.model';
+
+export interface Page<T> {
+  content: T[];
+  totalPages: number;
+  totalElements: number;
+  number: number;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -11,8 +18,12 @@ export class ProduitService {
 
   constructor(private http: HttpClient) {}
 
-  getProduits(): Observable<Produit[]> {
-    return this.http.get<Produit[]>(this.apiURL);
+  getProduits(page: number, size: number): Observable<Page<Produit>> {
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', size.toString());
+
+    return this.http.get<Page<Produit>>(this.apiURL, { params });
   }
 
   getProduitById(id: number): Observable<Produit> {

@@ -1,21 +1,27 @@
-import { Component, OnInit, Input } from '@angular/core';  // <-- Input added
+import { Component, OnInit, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Produit } from '../../models/Produits.model';
 import { ProduitService } from '../../services/produit.service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-produit-list',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './produit-list.component.html',
   styleUrls: ['./produit-list.component.css']
 })
 export class ProduitListComponent implements OnInit {
-  @Input() searchTerm: string = '';  // <-- search input from parent
+  @Input() searchTerm: string = '';
 
-  isLoading = true;
-  errorMessage = '';
   produits: Produit[] = [];
+  allProduits: Produit[] = [];
+  isLoading = false;
+  errorMessage = '';
+
+  currentPage = 0;
+  pageSize = 10;
+  totalPages = 1;
 
   constructor(private produitService: ProduitService) {}
 
@@ -23,11 +29,14 @@ export class ProduitListComponent implements OnInit {
     this.loadProduits();
   }
 
-  loadProduits(): void {
+  loadProduits(page: number = 0): void {
     this.isLoading = true;
-    this.produitService.getProduits().subscribe({
+    this.produitService.getProduits(page, this.pageSize).subscribe({
       next: (data) => {
-        this.produits = data;
+        this.produits = data.content;
+        this.allProduits = data.content;
+        this.totalPages = data.totalPages;
+        this.currentPage = data.number;
         this.isLoading = false;
       },
       error: (err) => {
@@ -38,15 +47,25 @@ export class ProduitListComponent implements OnInit {
     });
   }
 
-  // Filtered produits based on searchTerm
   get filteredProduits(): Produit[] {
     if (!this.searchTerm.trim()) return this.produits;
     const term = this.searchTerm.toLowerCase();
     return this.produits.filter(p =>
-      p.nom.toLowerCase().includes(term) 
+      p.nom.toLowerCase().includes(term) ||
+      p.categorie.toLowerCase().includes(term) ||
+      (p.fournisseur?.nom?.toLowerCase().includes(term) ?? false)
     );
   }
 
-  // Other methods (edit, delete...) go here as usual
+  nextPage(): void {
+    if (this.currentPage + 1 < this.totalPages) {
+      this.loadProduits(this.currentPage + 1);
+    }
+  }
 
+  prevPage(): void {
+    if (this.currentPage > 0) {
+      this.loadProduits(this.currentPage - 1);
+    }
+  }
 }

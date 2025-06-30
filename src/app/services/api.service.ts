@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpEvent, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpEvent, HttpHeaders, HttpRequest } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
@@ -11,7 +11,7 @@ export class ApiService {
     formData.append('file', file);
 
     const headers = new HttpHeaders({
-      'Accept': 'application/json'  // ✅ Fixed the typo here
+      'Accept': 'application/json'
     });
 
     return this.http.post('http://localhost:8080/api/files/upload', formData, {

@@ -38,20 +38,25 @@
           </td>
         </tr>
 
-        <!-- Inline edit row -->
-        <tr *ngIf="editingFournisseur?.id === f.id" class="edit-row">
-          <td>{{ f.id }}</td>
-          <td><input [(ngModel)]="editingFournisseurCopy.nom" class="form-control" /></td>
-          <td><input [(ngModel)]="editingFournisseurCopy.adresse" class="form-control" /></td>
-          <td><input [(ngModel)]="editingFournisseurCopy.email" class="form-control" /></td>
-          <td><input [(ngModel)]="editingFournisseurCopy.notation" type="number" class="form-control" /></td>
-          <td>
-            <button class="btn btn-sm btn-success me-2" (click)="onSave(editingFournisseurCopy)">Save</button>
-            <button class="btn btn-sm btn-secondary" (click)="closeModal()">Cancel</button>
-          </td>
-        </tr>
+     <tr *ngIf="editingFournisseur?.id === f.id" class="edit-row">
+  <td>{{ f.id }}</td>
+  <td><input [(ngModel)]="editingFournisseurCopy.nom" class="form-control" /></td>
+  <td><input [(ngModel)]="editingFournisseurCopy.adresse" class="form-control" /></td>
+  <td><input [(ngModel)]="editingFournisseurCopy.email" class="form-control" /></td>
+  <td><input [(ngModel)]="editingFournisseurCopy.notation" type="number" class="form-control" /></td>
+  <td>
+    <button class="btn btn-sm btn-success me-2" (click)="saveChanges()">Save</button>
+    <button class="btn btn-sm btn-secondary" (click)="closeModal()">Cancel</button>
+  </td>
+</tr>
+
 
       </ng-container>
     </tbody>
   </table>
+</div>
+<div class="pagination-controls">
+  <button (click)="prevPage()" [disabled]="currentPage === 0">Précédent</button>
+  <span>Page {{currentPage + 1}} / {{totalPages}}</span>
+  <button (click)="nextPage()" [disabled]="currentPage + 1 >= totalPages">Suivant</button>
 </div>

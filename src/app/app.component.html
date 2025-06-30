@@ -29,6 +29,11 @@
 </nav>
 
 <!-- Main content based on selectedSection -->
+
+
+
 <app-fournisseur-list *ngIf="selectedSection === 'fournisseurs'" [searchTerm]="searchTerm"></app-fournisseur-list>
-<app-produit-list *ngIf="selectedSection === 'produits'" [searchTerm]="searchTerm"></app-produit-list>
-<app-upload *ngIf="selectedSection === 'upload'"></app-upload>
+<app-produit-list
+  *ngIf="selectedSection === 'produits'"
+  [searchTerm]="searchTerm">
+</app-produit-list><app-upload *ngIf="selectedSection === 'upload'"></app-upload>
