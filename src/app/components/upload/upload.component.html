@@ -1,21 +1,19 @@
 <div class="upload-container">
-<h2> Uploader un document</h2>
+  <h2>Uploader un document</h2>
 
-<input type="file" (change)="onFileSelected($event)"
-accept=".pdf, .xlsx ,.csv">
+  <input type="file" (change)="onFileSelected($event)" accept=".pdf, .xlsx, .csv" />
 
-<div *ngIf="selectedFile" class="file-info">
-    <p>Fichier selectionné : <strong>{{ selectedFile.name}}</strong></p>
-<button (click)="uploadFile()">Envoyer</button>
-</div>
+  <div *ngIf="selectedFile" class="file-info">
+    <p>Fichier sélectionné : <strong>{{ selectedFile.name }}</strong></p>
+    <button [disabled]="uploadProgress > 0" (click)="uploadFile()">Envoyer</button>
+  </div>
 
-<div *ngIf="uploadProgress >0" class="progress-bar">
-    <progress [value]="uploadProgress"max="100"></progress>
-    <span> {{uploadProgress}}%</span>
-</div>
+  <div *ngIf="uploadProgress > 0" class="progress-bar">
+    <progress [value]="uploadProgress" max="100"></progress>
+    <span>{{ uploadProgress }}%</span>
+  </div>
 
-<div *ngIf="uploadMessage" class="message" [class.error]="uploadMessage.includes('erreur')">
-    {{uploadMessage}}
-</div>
-
+  <div *ngIf="uploadMessage" class="message" [class.error]="uploadMessage.includes('erreur')">
+    {{ uploadMessage }}
+  </div>
 </div>

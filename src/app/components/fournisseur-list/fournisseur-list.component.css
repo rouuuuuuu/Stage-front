@@ -1,0 +1,95 @@
+/* fournisseur-list.component.css */
+.container {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 25px;
+  background: #e8f0fe; /* soft blue */
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(74,144,226,0.15);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+h2 {
+  color: #2c3e50;
+  font-weight: 700;
+  margin-bottom: 18px;
+  border-bottom: 3px solid #4a90e2;
+  padding-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 1.1px;
+}
+
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 14px;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 6px 20px rgba(74,144,226,0.1);
+}
+
+thead tr {
+  background: #4a90e2;
+  color: white;
+  font-size: 0.9rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+tbody tr {
+  background: #f7faff;
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+}
+
+tbody tr:hover {
+  background: #dbe9fe;
+}
+
+th, td {
+  padding: 14px 22px;
+  text-align: left;
+  vertical-align: middle;
+}
+
+th:first-child, td:first-child {
+  border-top-left-radius: 12px;
+  border-bottom-left-radius: 12px;
+}
+
+th:last-child, td:last-child {
+  border-top-right-radius: 12px;
+  border-bottom-right-radius: 12px;
+}
+
+/* Buttons */
+.btn-primary {
+  background-color: #4a90e2;
+  border: none;
+  border-radius: 10px;
+  padding: 7px 16px;
+  font-weight: 600;
+  color: white;
+  transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-color: #3a78c2;
+  box-shadow: 0 6px 12px rgba(58,120,194,0.4);
+}
+
+.btn-danger {
+  background-color: #e74c3c;
+  border-radius: 10px;
+  border: none;
+  padding: 7px 16px;
+  font-weight: 600;
+  color: white;
+  transition: background-color 0.3s ease;
+}
+
+.btn-danger:hover {
+  background-color: #c0392b;
+  box-shadow: 0 6px 12px rgba(192,57,43,0.4);
+}

@@ -1,0 +1,57 @@
+<div class="container mt-4">
+  <h2>Fournisseurs</h2>
+
+  <div *ngIf="isLoading" class="text-center">
+    <div class="spinner-border" role="status">
+      <span class="visually-hidden">Chargement...</span>
+    </div>
+  </div>
+
+  <div *ngIf="errorMessage" class="alert alert-danger">
+    {{ errorMessage }}
+  </div>
+
+  <table *ngIf="!isLoading && !errorMessage" class="table table-striped">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nom</th>
+        <th>Adresse</th>
+        <th>Email</th>
+        <th>Note</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container *ngFor="let f of fournisseurs">
+        
+        <!-- Regular display row -->
+        <tr *ngIf="editingFournisseur?.id !== f.id">
+          <td>{{ f.id }}</td>
+          <td>{{ f.nom }}</td>
+          <td>{{ f.adresse }}</td>
+          <td>{{ f.email }}</td>
+          <td>{{ f.notation }}</td>
+          <td>
+            <button class="btn btn-sm btn-primary me-2" (click)="openModal(f)">Edit</button>
+            <button class="btn btn-sm btn-danger" (click)="deleteFournisseur(f.id)">Delete</button>
+          </td>
+        </tr>
+
+        <!-- Inline edit row -->
+        <tr *ngIf="editingFournisseur?.id === f.id" class="edit-row">
+          <td>{{ f.id }}</td>
+          <td><input [(ngModel)]="editingFournisseurCopy.nom" class="form-control" /></td>
+          <td><input [(ngModel)]="editingFournisseurCopy.adresse" class="form-control" /></td>
+          <td><input [(ngModel)]="editingFournisseurCopy.email" class="form-control" /></td>
+          <td><input [(ngModel)]="editingFournisseurCopy.notation" type="number" class="form-control" /></td>
+          <td>
+            <button class="btn btn-sm btn-success me-2" (click)="onSave(editingFournisseurCopy)">Save</button>
+            <button class="btn btn-sm btn-secondary" (click)="closeModal()">Cancel</button>
+          </td>
+        </tr>
+
+      </ng-container>
+    </tbody>
+  </table>
+</div>

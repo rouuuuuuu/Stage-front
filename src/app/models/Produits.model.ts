@@ -5,4 +5,5 @@ export interface Produit {
   nom: string;
   categorie: string;
   prixUnitaire: number;
-  fournisseur: Fournisseur;  }
+  fournisseur?: Fournisseur | null; // Allow null or undefined
+}

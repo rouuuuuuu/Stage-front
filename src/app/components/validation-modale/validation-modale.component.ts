@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Fournisseur } from '../../models/Fournisseurs.model';
 import { CommonModule } from '@angular/common';
@@ -12,11 +12,12 @@ import { CommonModule } from '@angular/common';
 })
 export class ValidationModalComponent implements OnInit {
   @Input() fournisseur!: Fournisseur;
+  @Output() save = new EventEmitter<Fournisseur>();
+@Output() close = new EventEmitter<void>();
+
   validationForm!: FormGroup;
 
-  constructor(
-    private fb: FormBuilder
-  ) {}
+  constructor(private fb: FormBuilder) {}
 
   ngOnInit(): void {
     this.initForm();
@@ -32,11 +33,16 @@ export class ValidationModalComponent implements OnInit {
   }
 
   onSubmit(): void {
-    if (this.validationForm.valid) {
-      const updatedFournisseur: Fournisseur = {
-        ...this.fournisseur,
-        ...this.validationForm.value
-      };
-    }
+  if (this.validationForm.valid) {
+    const updatedFournisseur: Fournisseur = {
+      ...this.fournisseur,
+      ...this.validationForm.value
+    };
+    this.save.emit(updatedFournisseur); // Send the beast back up to the parent
+    this.closeModal();                  // Then close the damn modal
   }
+}
+closeModal(): void {
+  this.close.emit();
+}
 }

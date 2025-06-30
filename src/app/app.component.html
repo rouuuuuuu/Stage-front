@@ -1,5 +1,34 @@
-<a routerLink="/upload">Upload des Documents</a>
-<router-outlet></router-outlet>
-<div class ="app-container">
-  <app-data-table></app-data-table>
-</div>
+<nav class="navbar">
+  <div class="navbar-left">
+    <div class="app-name">MyApp</div>
+
+    <div class="dropdown">
+      <button class="dropbtn" (click)="toggleMenu()">
+        Menu &#x25BC;
+      </button>
+      <div class="dropdown-content" [class.show]="menuOpen">
+        <a href="#" (click)="$event.preventDefault(); showSection('fournisseurs')">Fournisseurs</a>
+        <a href="#" (click)="$event.preventDefault(); showSection('produits')">Produits</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="navbar-center">
+    <input
+      type="text"
+      placeholder="Search..."
+      [(ngModel)]="searchTerm"
+      (input)="onSearch()"
+      aria-label="Search"
+    />
+  </div>
+
+  <div class="navbar-right">
+    <button class="btn-upload" (click)="showSection('upload')">Upload</button>
+  </div>
+</nav>
+
+<!-- Main content based on selectedSection -->
+<app-fournisseur-list *ngIf="selectedSection === 'fournisseurs'" [searchTerm]="searchTerm"></app-fournisseur-list>
+<app-produit-list *ngIf="selectedSection === 'produits'" [searchTerm]="searchTerm"></app-produit-list>
+<app-upload *ngIf="selectedSection === 'upload'"></app-upload>
