@@ -1,0 +1,50 @@
+<div class="container">
+  <h2>Consultation</h2>
+
+  <form [formGroup]="consultationForm" (ngSubmit)="envoyerConsultation()">
+    <label for="description">Description de la demande :</label>
+    <input type="text" id="description" formControlName="description" />
+
+    <!-- Zone d'autocomplétion -->
+    <div class="autocomplete-wrapper">
+      <label for="produitRecherche">Rechercher un produit :</label>
+      <input type="text" id="produitRecherche" formControlName="produitRecherche" placeholder="Tapez pour chercher..." />
+
+      <ul *ngIf="produitsSuggestions.length" class="suggestions-list">
+        <li *ngFor="let produit of produitsSuggestions" (click)="ajouterProduit(produit)">
+          {{ produit.nom }}
+        </li>
+      </ul>
+    </div>
+
+    <!-- Produits sélectionnés -->
+    <div class="selected-products">
+      <h4>Produits sélectionnés :</h4>
+      <ul>
+        <li *ngFor="let p of produitsSelectionnes">
+          {{ p.nom }}
+          <span class="remove-icon" (click)="supprimerProduit(p)">✕</span>
+        </li>
+      </ul>
+    </div>
+
+    <button type="submit">Envoyer</button>
+
+    <div *ngIf="successMessage" [ngClass]="{'success-toast': successMessage.includes('succès'), 'error-toast': successMessage.includes('Veuillez')}">
+  {{ successMessage }}
+</div>
+
+  </form>
+
+  <!-- Section ajout produit séparée -->
+  <div class="new-product-zone">
+    <hr />
+    <h4>Vous ne trouvez pas le produit ?</h4>
+    <button (click)="ouvrirModal()">➕ Ajouter un nouveau produit</button>
+
+    <app-add-product-modal
+      *ngIf="modalOuvert"
+      (produitAjoute)="gererProduitAjoute($event)">
+    </app-add-product-modal>
+  </div>
+</div>

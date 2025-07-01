@@ -7,8 +7,10 @@
         Menu &#x25BC;
       </button>
       <div class="dropdown-content" [class.show]="menuOpen">
-        <a href="#" (click)="$event.preventDefault(); showSection('fournisseurs')">Fournisseurs</a>
-        <a href="#" (click)="$event.preventDefault(); showSection('produits')">Produits</a>
+        <a routerLink="/fournisseurs" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="closeMenu()">Fournisseurs</a>
+        <a routerLink="/produits" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="closeMenu()">Produits</a>
+        <a routerLink="/consultations" routerLinkActive="active" (click)="closeMenu()">Liste des Consultations</a>
+        <a routerLink="/consultation" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="closeMenu()">Consultation</a>
       </div>
     </div>
   </div>
@@ -24,16 +26,9 @@
   </div>
 
   <div class="navbar-right">
-    <button class="btn-upload" (click)="showSection('upload')">Upload</button>
+    <button class="btn-upload" routerLink="/upload" (click)="closeMenu()">Upload</button>
   </div>
 </nav>
 
-<!-- Main content based on selectedSection -->
-
-
-
-<app-fournisseur-list *ngIf="selectedSection === 'fournisseurs'" [searchTerm]="searchTerm"></app-fournisseur-list>
-<app-produit-list
-  *ngIf="selectedSection === 'produits'"
-  [searchTerm]="searchTerm">
-</app-produit-list><app-upload *ngIf="selectedSection === 'upload'"></app-upload>
+<!-- 👑 THIS IS THE KINGDOM GATE: LET ROUTES FLOW -->
+<router-outlet></router-outlet>

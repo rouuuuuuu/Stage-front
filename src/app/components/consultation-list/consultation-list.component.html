@@ -1,0 +1,38 @@
+<div class="container">
+  <h2>Consultations enregistrées</h2>
+
+  <input
+    type="text"
+    placeholder="Rechercher par client, description ou produit..."
+    [(ngModel)]="searchTerm"
+    (input)="onSearch()"
+    class="search-input"
+  />
+
+  <table *ngIf="filteredConsultations.length; else noData">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Description</th>
+        <th>Produits demandés</th>
+        <th>Date de création</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let consultation of filteredConsultations">
+        <td>{{ consultation.id }}</td>
+        <td>{{ consultation.description }}</td>
+        <td>
+          <ul>
+            <li *ngFor="let p of consultation.produitsDemandes">{{ p.nom }}</li>
+          </ul>
+        </td>
+        <td>{{ consultation.dateCreation | date:'short' }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <ng-template #noData>
+    <p class="no-data">Aucune consultation trouvée.</p>
+  </ng-template>
+</div>
