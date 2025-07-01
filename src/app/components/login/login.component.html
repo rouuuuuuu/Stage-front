@@ -1,0 +1,36 @@
+<div class="container">
+  <h2>{{ isLogin ? 'Connexion' : 'Inscription' }}</h2>
+
+  <form (ngSubmit)="submit()">
+
+    <div *ngIf="!isLogin">
+      <label for="nom">Nom</label>
+      <input id="nom" [(ngModel)]="nom" name="nom" type="text" required />
+    </div>
+
+    <label for="email">Email</label>
+    <input id="email" [(ngModel)]="email" name="email" type="email" required />
+
+    <label for="password">Mot de passe</label>
+    <input id="password" [(ngModel)]="password" name="password" type="password" required />
+
+    <div *ngIf="!isLogin">
+      <label for="role">Rôle</label>
+      <select id="role" [(ngModel)]="role" name="role">
+        <option value="CLIENT">Client</option>
+        <option value="ADMIN">Admin</option>
+      </select>
+    </div>
+
+    <div *ngIf="error" class="error-toast">{{ error }}</div>
+
+    <button type="submit">
+      {{ isLogin ? 'Se connecter' : 'S’inscrire' }}
+    </button>
+
+    <button type="button" class="btn btn-link" (click)="toggleMode()" style="margin-top: 10px;">
+      {{ isLogin ? "Pas encore de compte ? Inscris-toi" : "Tu as déjà un compte ? Connecte-toi" }}
+    </button>
+
+  </form>
+</div>

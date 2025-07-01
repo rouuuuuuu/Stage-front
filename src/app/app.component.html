@@ -7,10 +7,13 @@
         Menu &#x25BC;
       </button>
       <div class="dropdown-content" [class.show]="menuOpen">
-        <a routerLink="/fournisseurs" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="closeMenu()">Fournisseurs</a>
-        <a routerLink="/produits" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="closeMenu()">Produits</a>
-        <a routerLink="/consultations" routerLinkActive="active" (click)="closeMenu()">Liste des Consultations</a>
-        <a routerLink="/consultation" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="closeMenu()">Consultation</a>
+        <!-- Admin-only links -->
+        <a *ngIf="isAdmin" routerLink="/fournisseurs" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="closeMenu()">Fournisseurs</a>
+        <a *ngIf="isAdmin" routerLink="/produits" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="closeMenu()">Produits</a>
+        <a *ngIf="isAdmin" routerLink="/consultations" routerLinkActive="active" (click)="closeMenu()">Liste des Consultations</a>
+
+        <!-- Both Admin and Client can see this -->
+        <a *ngIf="isAdmin || isClient" routerLink="/consultation" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="closeMenu()">Consultation</a>
       </div>
     </div>
   </div>
@@ -26,7 +29,10 @@
   </div>
 
   <div class="navbar-right">
-    <button class="btn-upload" routerLink="/upload" (click)="closeMenu()">Upload</button>
+    <!-- Upload visible only for Admin -->
+    <button *ngIf="isAdmin" class="btn-upload" routerLink="/upload" (click)="closeMenu()">Upload</button>
+    <!-- Logout button for everyone logged in -->
+    <button *ngIf="isLoggedIn" class="btn-logout" (click)="logout()">Logout</button>
   </div>
 </nav>
 
