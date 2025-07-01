@@ -27,34 +27,25 @@ export class ConsultationListComponent implements OnInit {
 
   constructor(private apiService: ApiService, private authService: AuthService) {}
 
-  ngOnInit(): void {
-    this.authService.currentClient$.subscribe(client => {
-      if (client) {
-        this.currentClientId = client.id;
-        this.loadConsultations();
-      }
-    });
-  }
+ ngOnInit(): void {
+  this.authService.currentClient$.subscribe(client => {
+    if (client) {
+      this.currentClientId = client.id;
+      this.loadConsultations();
+    }
+  });
+}
 
- loadConsultations() {
+loadConsultations() {
   this.apiService.getConsultations().subscribe({
     next: (data) => {
       console.log('All consultations from API:', data);
-      console.log('Current client ID:', this.currentClientId);
-
-      if (this.authService.getCurrentClient()?.role === 'ADMIN') {
-        this.consultations = data;  // Admin sees all
-      } else {
-        this.consultations = data.filter(c => c.client?.id === this.currentClientId);
-      }
-      console.log('Filtered consultations:', this.consultations);
-
-      this.filteredConsultations = [...this.consultations];
+      this.consultations = data;
+      this.filteredConsultations = [...data];
     },
     error: (err) => console.error('Erreur chargement consultations', err)
   });
 }
-
 
 
   onSearch() {

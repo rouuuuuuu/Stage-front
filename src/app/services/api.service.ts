@@ -41,9 +41,14 @@ postConsultation(dto: any) {
   }
 
   // Liste des consultations enregistrées
- getConsultations() {
-  return this.http.get<any[]>('http://localhost:8080/api/consultations');
+ getConsultations(clientId?: number): Observable<any[]> {
+  let url = '/api/consultations';
+  if (clientId) {
+    url += `?clientId=${clientId}`;
+  }
+  return this.http.get<any[]>(url);
 }
+
 login(email: string) {
   // Assuming your backend endpoint is /api/login and expects an email param or in body
   return this.http.post<any>('http://localhost:8080/api/login', { email });
