@@ -4,7 +4,6 @@ import { debounceTime, switchMap } from 'rxjs/operators';
 import { ApiService } from '../../services/api.service';
 import { CommonModule } from '@angular/common';
 import { AddProductModalComponent } from '../add-product-modal/add-product-modal.component';
-import { AuthService } from '../../services/auth.service'; // Don't forget this
 
 @Component({
   selector: 'app-consultation-form',
@@ -27,10 +26,12 @@ export class ConsultationFormComponent implements OnInit {
 
   @Output() close = new EventEmitter<void>();
 
+  // If you want to assign a static client ID for now:
+  clientId: number = 1; // <=== Replace with actual client ID or remove if not needed
+
   constructor(
     private fb: FormBuilder,
     private apiService: ApiService,
-    private authService: AuthService // Inject AuthService here
   ) {}
 
   ngOnInit(): void {
@@ -84,14 +85,15 @@ export class ConsultationFormComponent implements OnInit {
       return;
     }
 
-    const currentClient = this.authService.getCurrentClient();
-    if (!currentClient) {
-      this.successMessage = 'Utilisateur non connecté.';
+    // Remove authService dependency
+    // Just use this.clientId directly, or find another way to set it
+    if (!this.clientId) {
+      this.successMessage = 'Client non défini.';
       return;
     }
 
     const dto = {
-      clientId: currentClient.id,    // <== DYNAMIC client ID, baby
+      clientId: this.clientId,
       description: this.consultationForm.value.description,
       produitsIds: this.produitsSelectionnes.map(p => p.id)
     };

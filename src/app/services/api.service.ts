@@ -53,5 +53,22 @@ login(email: string) {
   // Assuming your backend endpoint is /api/login and expects an email param or in body
   return this.http.post<any>('http://localhost:8080/api/login', { email });
 }
+// Statistiques fournisseur par produits
+getFournisseurStatsByProduits(produitsIds: number[]): Observable<any[]> {
+  const params = produitsIds.map(id => `ids=${id}`).join('&');
+  return this.http.get<any[]>(`${this.baseUrl}/factures/stats?${params}`);
+}
+
+
+  getFournisseurs(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/fournisseurs`);
+  }
+
+
+// Récupération de toutes les factures
+getAllFactures(): Observable<any[]> {
+  return this.http.get<any[]>(`${this.baseUrl}/factures`);
+}
+
 
 }
