@@ -51,10 +51,12 @@ export class ProduitListComponent implements OnInit {
     if (!this.searchTerm.trim()) return this.produits;
     const term = this.searchTerm.toLowerCase();
     return this.produits.filter(p =>
-      p.nom.toLowerCase().includes(term) ||
-      p.categorie.toLowerCase().includes(term) ||
-      (p.fournisseur?.nom?.toLowerCase().includes(term) ?? false)
-    );
+  p.nom.toLowerCase().includes(term) ||
+  p.categorie.toLowerCase().includes(term) ||
+  (p.fournisseurNom?.toLowerCase().includes(term) ?? false)
+);
+
+    
   }
 
   nextPage(): void {

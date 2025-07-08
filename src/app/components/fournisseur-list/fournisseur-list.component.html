@@ -1,7 +1,48 @@
 <div class="container mt-4">
   <h2>Fournisseurs</h2>
 
-  <div *ngIf="isLoading" class="text-center">
+  <!-- Filters -->
+  <div class="row mb-3 g-3">
+    <div class="col-md-2">
+      <label>Prix min :</label>
+      <input type="number" [(ngModel)]="filters.minPrix" class="form-control" (change)="applyFilters()" placeholder="Min prix" />
+    </div>
+    <div class="col-md-2">
+      <label>Prix max :</label>
+      <input type="number" [(ngModel)]="filters.maxPrix" class="form-control" (change)="applyFilters()" placeholder="Max prix" />
+    </div>
+    <div class="col-md-2">
+      <label>Note min :</label>
+      <input type="number" step="0.1" min="0" max="5" [(ngModel)]="filters.minNotation" class="form-control" (change)="applyFilters()" placeholder="Min note" />
+    </div>
+    <div class="col-md-2">
+      <label>Catégorie produit :</label>
+      <input type="text" [(ngModel)]="filters.categorie" class="form-control" (change)="applyFilters()" placeholder="Ex: Électronique" />
+    </div>
+    <div class="col-md-2">
+      <label>Nom produit :</label>
+      <input type="text" [(ngModel)]="filters.nomProduit" class="form-control" (change)="applyFilters()" placeholder="Mot-clé produit" />
+    </div>
+    <div class="col-md-2">
+      <label>Délai max (jours) :</label>
+      <input type="number" [(ngModel)]="filters.maxDelai" class="form-control" (change)="applyFilters()" placeholder="Max délai" />
+    </div>
+  </div>
+
+  <div class="row mb-3">
+    <div class="col-md-3">
+      <label>Devise :</label>
+      <select [(ngModel)]="filters.devise" class="form-select" (change)="applyFilters()">
+        <option value="">Toutes</option>
+        <option value="TND">TND</option>
+        <option value="EUR">EUR</option>
+        <option value="USD">USD</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Loader / Error -->
+  <div *ngIf="isLoading" class="text-center my-3">
     <div class="spinner-border" role="status">
       <span class="visually-hidden">Chargement...</span>
     </div>
@@ -11,52 +52,62 @@
     {{ errorMessage }}
   </div>
 
-  <table *ngIf="!isLoading && !errorMessage" class="table table-striped">
-    <thead>
+  <!-- Table -->
+  <table *ngIf="!isLoading && !errorMessage" class="table table-bordered table-hover">
+    <thead class="table-light">
       <tr>
         <th>ID</th>
         <th>Nom</th>
         <th>Adresse</th>
         <th>Email</th>
         <th>Note</th>
+        <th>Prix</th>
+        <th>Délai</th>
+        <th>Devise</th>
         <th>Actions</th>
       </tr>
     </thead>
     <tbody>
       <ng-container *ngFor="let f of fournisseurs">
-        
-        <!-- Regular display row -->
-        <tr *ngIf="editingFournisseur?.id !== f.id">
+        <!-- Normal Row -->
+        <tr [class.best-match]="f.id === meilleurFournisseurId" *ngIf="editingFournisseur?.id !== f.id">
           <td>{{ f.id }}</td>
           <td>{{ f.nom }}</td>
           <td>{{ f.adresse }}</td>
           <td>{{ f.email }}</td>
           <td>{{ f.notation }}</td>
+          <td>{{ f.prix ?? 'N/A' }}</td>
+          <td>{{ f.delai ?? 'N/A' }}</td>
+          <td>{{ f.devise ?? 'N/A' }}</td>
           <td>
             <button class="btn btn-sm btn-primary me-2" (click)="openModal(f)">Edit</button>
             <button class="btn btn-sm btn-danger" (click)="deleteFournisseur(f.id)">Delete</button>
           </td>
         </tr>
 
-     <tr *ngIf="editingFournisseur?.id === f.id" class="edit-row">
-  <td>{{ f.id }}</td>
-  <td><input [(ngModel)]="editingFournisseurCopy.nom" class="form-control" /></td>
-  <td><input [(ngModel)]="editingFournisseurCopy.adresse" class="form-control" /></td>
-  <td><input [(ngModel)]="editingFournisseurCopy.email" class="form-control" /></td>
-  <td><input [(ngModel)]="editingFournisseurCopy.notation" type="number" class="form-control" /></td>
-  <td>
-    <button class="btn btn-sm btn-success me-2" (click)="saveChanges()">Save</button>
-    <button class="btn btn-sm btn-secondary" (click)="closeModal()">Cancel</button>
-  </td>
-</tr>
-
-
+        <!-- Edit Row -->
+        <tr *ngIf="editingFournisseur?.id === f.id" class="edit-row">
+          <td>{{ f.id }}</td>
+          <td><input [(ngModel)]="editingFournisseurCopy.nom" class="form-control" /></td>
+          <td><input [(ngModel)]="editingFournisseurCopy.adresse" class="form-control" /></td>
+          <td><input [(ngModel)]="editingFournisseurCopy.email" class="form-control" /></td>
+          <td><input [(ngModel)]="editingFournisseurCopy.notation" type="number" step="0.1" class="form-control" /></td>
+          <td><input [(ngModel)]="editingFournisseurCopy.prix" type="number" class="form-control" disabled /></td>
+          <td><input [(ngModel)]="editingFournisseurCopy.delai" type="number" class="form-control" disabled /></td>
+          <td><input [(ngModel)]="editingFournisseurCopy.devise" class="form-control" disabled /></td>
+          <td>
+            <button class="btn btn-sm btn-success me-2" (click)="saveChanges()">Save</button>
+            <button class="btn btn-sm btn-secondary" (click)="closeModal()">Cancel</button>
+          </td>
+        </tr>
       </ng-container>
     </tbody>
   </table>
-</div>
-<div class="pagination-controls">
-  <button (click)="prevPage()" [disabled]="currentPage === 0">Précédent</button>
-  <span>Page {{currentPage + 1}} / {{totalPages}}</span>
-  <button (click)="nextPage()" [disabled]="currentPage + 1 >= totalPages">Suivant</button>
+
+  <!-- Pagination -->
+  <div class="pagination-controls mt-3 d-flex justify-content-between">
+    <button (click)="prevPage()" [disabled]="currentPage === 0" class="btn btn-outline-secondary">Précédent</button>
+    <span>Page {{ currentPage + 1 }} / {{ totalPages }}</span>
+    <button (click)="nextPage()" [disabled]="currentPage + 1 >= totalPages" class="btn btn-outline-secondary">Suivant</button>
+  </div>
 </div>

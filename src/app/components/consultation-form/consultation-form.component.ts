@@ -4,6 +4,8 @@ import { debounceTime, switchMap } from 'rxjs/operators';
 import { ApiService } from '../../services/api.service';
 import { CommonModule } from '@angular/common';
 import { AddProductModalComponent } from '../add-product-modal/add-product-modal.component';
+import { HostListener } from '@angular/core';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'app-consultation-form',
@@ -21,6 +23,15 @@ export class ConsultationFormComponent implements OnInit {
   produitsSuggestions: any[] = [];
   produitsSelectionnes: any[] = [];
   successMessage = '';
+@HostListener('document:click', ['$event'])
+onClickOutside(event: MouseEvent) {
+  const target = event.target as HTMLElement;
+  
+  // Check if the clicked element is NOT inside the autocomplete-wrapper
+  if (!target.closest('.autocomplete-wrapper')) {
+    this.produitsSuggestions = [];
+  }
+}
 
   modalOuvert = false;
 
@@ -41,19 +52,28 @@ export class ConsultationFormComponent implements OnInit {
     });
 
     this.consultationForm.get('produitRecherche')?.valueChanges
-      .pipe(
-        debounceTime(300),
-        switchMap(query => this.apiService.searchProduits(query))
-      )
-      .subscribe(data => {
-        this.produitsSuggestions = data;
-      });
-  }
+  .pipe(
+    debounceTime(300),
+    switchMap(query => {
+      if (!query || query.trim() === '') {
+        this.produitsSuggestions = [];  // Clear suggestions immediately on empty
+        return of([]); // Return empty observable, no API call
+      }
+      return this.apiService.searchProduits(query);
+    })
+  )
+  .subscribe(data => {
+    this.produitsSuggestions = data;
+  });
 
+  }
   ajouterProduit(produit: any) {
     this.produitsSelectionnes.push(produit);
     this.consultationForm.get('produitRecherche')?.reset();
-  }
+  this.produitsSuggestions = [];  // <— Clear suggestions here
+}
+
+  
 
   ouvrirModal() {
     this.modalOuvert = true;

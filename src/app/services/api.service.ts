@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpEvent, HttpHeaders, HttpRequest } from '@angular/common/http';
+import { HttpClient, HttpEvent, HttpHeaders, HttpParams, HttpRequest } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { Produit } from '../models/Produits.model';
 
 @Injectable({ providedIn: 'root' })
 export class ApiService {
@@ -25,9 +26,15 @@ export class ApiService {
   }
 
   //  Autocomplétion de produits
-  searchProduits(query: string): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/produits/search?query=${query}`);
-  }
+ searchProduits(query: string): Observable<Produit[]> {
+  // Defensive: prevent null or undefined from breaking your URL
+  const safeQuery = query ? query.trim() : '';
+
+  // Use HttpParams to properly encode query parameters — no guessing, no mistakes
+  const params = new HttpParams().set('query', safeQuery);
+
+  return this.http.get<Produit[]>(`${this.baseUrl}/produits/search`, { params });
+}
 
   // Envoi de consultation client
 postConsultation(dto: any) {

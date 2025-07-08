@@ -1,44 +1,33 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 import { Produit } from '../models/Produits.model';
-
-export interface Page<T> {
-  content: T[];
-  totalPages: number;
-  totalElements: number;
-  number: number;
-}
+import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ProduitService {
-  private apiURL = 'http://localhost:8080/api/produits';
+  private apiUrl = 'http://localhost:8080/api/produits';
 
   constructor(private http: HttpClient) {}
 
-  getProduits(page: number, size: number): Observable<Page<Produit>> {
-    const params = new HttpParams()
-      .set('page', page.toString())
-      .set('size', size.toString());
-
-    return this.http.get<Page<Produit>>(this.apiURL, { params });
+  getProduits(page: number, size: number): Observable<{ content: Produit[]; totalPages: number; number: number }> {
+    return this.http.get<{ content: Produit[]; totalPages: number; number: number }>(
+      `${this.apiUrl}?page=${page}&size=${size}`
+    );
   }
+ 
 
-  getProduitById(id: number): Observable<Produit> {
-    return this.http.get<Produit>(`${this.apiURL}/${id}`);
-  }
 
-  updateProduit(id: number, produit: Produit): Observable<Produit> {
-    return this.http.put<Produit>(`${this.apiURL}/${id}`, produit);
+  addProduit(produit: Partial<Produit>): Observable<Produit> {
+    return this.http.post<Produit>(`${this.apiUrl}/nouveau`, produit);
   }
 
   deleteProduit(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiURL}/${id}`);
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 
-  createProduit(produit: Produit): Observable<Produit> {
-    return this.http.post<Produit>(this.apiURL, produit);
+  searchProduits(query: string): Observable<Produit[]> {
+    return this.http.get<Produit[]>(`${this.apiUrl}/search?query=${query}`);
   }
 }

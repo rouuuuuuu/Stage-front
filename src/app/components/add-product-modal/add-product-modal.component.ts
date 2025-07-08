@@ -1,6 +1,6 @@
 import { Component, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
-import { ApiService } from '../../services/api.service'; // adapte le chemin selon ta structure
+import { ProduitService } from '../../services/produit.service';
 import { CommonModule } from '@angular/common';
 import { Validators } from '@angular/forms';
 
@@ -19,20 +19,21 @@ export class AddProductModalComponent {
 
   form: FormGroup;
 
-  constructor(private fb: FormBuilder, private api: ApiService) {
-    this.form = this.fb.group({
-      nom: ['', Validators.required],
-      categorie: ['', Validators.required],
-      prix: ['', Validators.required]
+  constructor(private fb: FormBuilder, private produitService: ProduitService) {
+  this.form = this.fb.group({
+    nom: ['', Validators.required],
+    categorie: ['', Validators.required],
+    prixUnitaire: ['', Validators.required]  // match DTO field
+  });
+}
+
+ajouterProduit() {
+  if (this.form.valid) {
+    const produitData = this.form.value;
+    this.produitService.addProduit(produitData).subscribe(p => {
+      this.produitAjoute.emit(p);
+      this.form.reset();
     });
   }
-
-  ajouterProduit() {
-    if (this.form.valid) {
-      this.api.addNouveauProduit(this.form.value).subscribe(p => {
-        this.produitAjoute.emit(p); // on le renvoie au parent
-        this.form.reset();
-      });
-    }
   }
 }

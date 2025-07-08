@@ -47,6 +47,14 @@ tbody tr:hover {
   background: #dbe9fe;
 }
 
+/* Best Match Highlight */
+tbody tr.best-match {
+  background: #ffe599 !important; /* bright golden highlight */
+  font-weight: 700;
+  color: #6b4c00;
+  box-shadow: 0 0 10px 3px rgba(255, 213, 79, 0.7);
+}
+
 th, td {
   padding: 14px 22px;
   text-align: left;
@@ -93,6 +101,7 @@ th:last-child, td:last-child {
   background-color: #c0392b;
   box-shadow: 0 6px 12px rgba(192,57,43,0.4);
 }
+
 .pagination-controls {
   display: flex;
   justify-content: center;

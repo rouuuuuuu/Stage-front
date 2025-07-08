@@ -34,8 +34,8 @@
         <td>{{ p.id }}</td>
         <td>{{ p.nom }}</td>
         <td>{{ p.categorie }}</td>
-        <td>{{ p.prixUnitaire | currency: 'EUR' }}</td>
-        <td>{{ p.fournisseur?.nom || '—' }}</td>
+        <td>{{ p.prixUnitaire | currency: 'TND' }}</td>
+        <td>{{ p.fournisseurNom || '—' }}</td>
       </tr>
     </tbody>
   </table>
