@@ -21,19 +21,24 @@ export class FournisseurService {
   getFournisseursPagedFiltered(
     currentPage: number,
     pageSize: number,
-    filters: { 
-      minPrix?: number | null; 
-      maxPrix?: number | null; 
+    filters: {
+      minPrix?: number | null;
+      maxPrix?: number | null;
       minNotation?: number | null;
       categorie?: string | null;
       nomProduit?: string | null;
       devise?: string | null;
       maxDelai?: number | null;
-    }
+    },
+    currentSort: string
   ): Observable<PageResponse<Fournisseur>> {
     let params = new HttpParams()
       .set('page', currentPage.toString())
       .set('size', pageSize.toString());
+
+    if (currentSort) {
+      params = params.set('sort', currentSort);
+    }
 
     if (filters.minPrix != null) params = params.set('minPrix', filters.minPrix.toString());
     if (filters.maxPrix != null) params = params.set('maxPrix', filters.maxPrix.toString());
@@ -45,22 +50,19 @@ export class FournisseurService {
 
     return this.http.get<PageResponse<Fournisseur>>(`${this.apiURL}/filter`, { params });
   }
-  // 🔍 By ID
+
   getFournisseurById(id: number): Observable<Fournisseur> {
     return this.http.get<Fournisseur>(`${this.apiURL}/${id}`);
   }
 
-  // 🔁 Update
   updateFournisseur(id: number, fournisseur: Fournisseur): Observable<Fournisseur> {
     return this.http.put<Fournisseur>(`${this.apiURL}/${id}`, fournisseur);
   }
 
-  // ❌ Delete
   deleteFournisseur(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiURL}/${id}`);
   }
 
-  // (Optional) 👀 Unfiltered all list (for dropdowns maybe)
   getAllFournisseurs(): Observable<Fournisseur[]> {
     return this.http.get<Fournisseur[]>(this.apiURL);
   }

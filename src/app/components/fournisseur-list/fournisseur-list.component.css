@@ -1,12 +1,114 @@
 /* fournisseur-list.component.css */
 .container {
-  max-width: 900px;
+  max-width: none;       /* Remove max-width restriction */
+  width: auto;           /* Let width be auto to fit content */
+  min-width: 900px;      /* At least 900px so it doesn’t shrink too much */
   margin: 40px auto;
   padding: 25px;
   background: #e8f0fe; /* soft blue */
   border-radius: 15px;
   box-shadow: 0 10px 30px rgba(74,144,226,0.15);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  overflow-x: auto;     /* Scroll horizontally if too wide for viewport */
+
+
+  /* Add these */
+  min-height: 100vh;          /* make it at least full viewport height */
+  display: flex;
+  flex-direction: column;
+}
+/* Filter labels */
+label {
+  font-weight: 600;
+  color: #2c3e50;
+  display: block;
+  margin-bottom: 6px;
+  font-size: 0.9rem;
+  letter-spacing: 0.05em;
+}
+
+/* Inputs and selects */
+input[type="number"],
+input[type="text"],
+select.form-select {
+  width: 100%;
+  padding: 8px 12px;
+  border: 2px solid #4a90e2;
+  border-radius: 12px;
+  background: #f7faff;
+  color: #2c3e50;
+  font-size: 0.95rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: inset 0 2px 5px rgba(74,144,226,0.1);
+  outline: none;
+  cursor: pointer;
+}
+
+/* Placeholder styling */
+input::placeholder {
+  color: #a0bce9;
+  font-style: italic;
+}
+
+/* On focus - cute blue glow */
+input[type="number"]:focus,
+input[type="text"]:focus,
+select.form-select:focus {
+  border-color: #3a78c2;
+  box-shadow: 0 0 8px 2px rgba(58,120,194,0.4);
+  background: #e1eaff;
+}
+
+/* Filter container spacing */
+.row.mb-3.g-3 > div {
+  margin-bottom: 15px;
+}
+
+/* Dropdown 'Trier par' style */
+#sort-select {
+  padding: 8px 14px;
+  border-radius: 12px;
+  border: 2px solid #4a90e2;
+  background: #f7faff;
+  color: #2c3e50;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: inset 0 2px 5px rgba(74,144,226,0.1);
+}
+
+/* Trier par focus glow */
+#sort-select:focus {
+  border-color: #3a78c2;
+  box-shadow: 0 0 10px 3px rgba(58,120,194,0.5);
+  background: #e1eaff;
+}
+
+/* Small margin below the sorter label */
+label[for="sort-select"] {
+  margin-bottom: 8px;
+  font-weight: 700;
+  color: #2c3e50;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+}
+.filters-group {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.filters-group .col-md-6 {
+  flex: 1 1 48%;
+  min-width: 230px;
+}
+.filters-group .form-control,
+.filters-group .form-select {
+  width: 200px; /* adjust to taste: 140–180 is usually nice */
+  min-width: 120px;
+  max-width: 100%;
 }
 
 h2 {
@@ -101,12 +203,41 @@ th:last-child, td:last-child {
   background-color: #c0392b;
   box-shadow: 0 6px 12px rgba(192,57,43,0.4);
 }
+/* Export Buttons Container */
+.export-buttons {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 20px;
+  justify-content: center; /* <-- CENTERED now */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Export Buttons styling matching your existing buttons */
+.btn-export {
+  background-color: #4a90e2; /* same blue as your .btn-primary */
+  border: none;
+  border-radius: 10px;
+  padding: 9px 20px;
+  font-weight: 600;
+  color: white;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(74, 144, 226, 0.25);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  font-size: 15px;
+  user-select: none;
+}
+
+.btn-export:hover {
+  background-color: #3a78c2; /* darker hover */
+  box-shadow: 0 6px 14px rgba(58, 120, 194, 0.45);
+}
 
 .pagination-controls {
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 15px;
+  
   margin-top: 20px;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   user-select: none;
