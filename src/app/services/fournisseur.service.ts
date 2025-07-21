@@ -19,37 +19,47 @@ export class FournisseurService {
   constructor(private http: HttpClient) {}
 
   getFournisseursPagedFiltered(
-    currentPage: number,
-    pageSize: number,
-    filters: {
-      minPrix?: number | null;
-      maxPrix?: number | null;
-      minNotation?: number | null;
-      categorie?: string | null;
-      nomProduit?: string | null;
-      devise?: string | null;
-      maxDelai?: number | null;
-    },
-    currentSort: string
-  ): Observable<PageResponse<Fournisseur>> {
-    let params = new HttpParams()
-      .set('page', currentPage.toString())
-      .set('size', pageSize.toString());
+  currentPage: number,
+  pageSize: number,
+  filters: {
+    minMontantTotal?: number | null;
+    maxMontantTotal?: number | null;
+    minNotation?: number | null;
+    categorie?: string | null;
+    nomProduit?: string | null;
+    devise?: string | null;
+    maxDelai?: number | null;
+  },
+  currentSort: string
+): Observable<PageResponse<Fournisseur>> {
+  let params = new HttpParams()
+    .set('page', currentPage.toString())
+    .set('size', pageSize.toString());
 
-    if (currentSort) {
-      params = params.set('sort', currentSort);
-    }
-
-    if (filters.minPrix != null) params = params.set('minPrix', filters.minPrix.toString());
-    if (filters.maxPrix != null) params = params.set('maxPrix', filters.maxPrix.toString());
-    if (filters.minNotation != null) params = params.set('minNotation', filters.minNotation.toString());
-    if (filters.categorie) params = params.set('categorie', filters.categorie);
-    if (filters.nomProduit) params = params.set('nomProduit', filters.nomProduit);
-    if (filters.devise) params = params.set('devise', filters.devise);
-    if (filters.maxDelai != null) params = params.set('maxDelai', filters.maxDelai.toString());
-
-    return this.http.get<PageResponse<Fournisseur>>(`${this.apiURL}/filter`, { params });
+  if (currentSort) {
+    params = params.set('sort', currentSort);
   }
+
+  // 💥 Changed names to match the backend
+  if (filters.minMontantTotal != null)
+    params = params.set('minMontantTotalDernier', filters.minMontantTotal.toString());
+  if (filters.maxMontantTotal != null)
+    params = params.set('maxMontantTotalDernier', filters.maxMontantTotal.toString());
+
+  if (filters.minNotation != null)
+    params = params.set('minNotation', filters.minNotation.toString());
+  if (filters.categorie)
+    params = params.set('categorie', filters.categorie);
+  if (filters.nomProduit)
+    params = params.set('nomProduit', filters.nomProduit);
+  if (filters.devise)
+    params = params.set('devise', filters.devise);
+  if (filters.maxDelai != null)
+    params = params.set('maxDelai', filters.maxDelai.toString());
+
+  return this.http.get<PageResponse<Fournisseur>>(`${this.apiURL}/filter`, { params });
+}
+
 
   getFournisseurById(id: number): Observable<Fournisseur> {
     return this.http.get<Fournisseur>(`${this.apiURL}/${id}`);

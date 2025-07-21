@@ -1,0 +1,74 @@
+/* login.component.css */
+.login-container {
+  max-width: 400px;
+  margin: 80px auto;
+  padding: 30px 35px;
+  background: #e8f0fe; /* same soft blue */
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(74,144,226,0.15);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 320px;
+}
+
+.login-container form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.login-container input[type="text"],
+.login-container input[type="password"] {
+  width: 100%;
+  padding: 10px 15px;
+  border: 2px solid #4a90e2;
+  border-radius: 12px;
+  background: #f7faff;
+  color: #2c3e50;
+  font-size: 1rem;
+  box-shadow: inset 0 2px 5px rgba(74,144,226,0.1);
+  outline: none;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  cursor: text;
+}
+
+.login-container input::placeholder {
+  color: #a0bce9;
+  font-style: italic;
+}
+
+.login-container input[type="text"]:focus,
+.login-container input[type="password"]:focus {
+  border-color: #3a78c2;
+  box-shadow: 0 0 8px 2px rgba(58,120,194,0.4);
+  background: #e1eaff;
+}
+
+.login-container button {
+  background-color: #4a90e2;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 0;
+  font-weight: 700;
+  color: white;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 6px 12px rgba(74,144,226,0.4);
+}
+
+.login-container button:hover {
+  background-color: #3a78c2;
+  box-shadow: 0 8px 16px rgba(58,120,194,0.6);
+}
+
+.login-container p {
+  margin-top: 15px;
+  color: #c0392b;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-align: center;
+}

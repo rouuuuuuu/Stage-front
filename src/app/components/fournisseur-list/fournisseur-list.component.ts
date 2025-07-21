@@ -36,17 +36,16 @@ export class FournisseurListComponent implements OnInit {
   totalPages = 0;
 
   // Filters
-  filters = {
-    minPrix: null as number | null,
-    maxPrix: null as number | null,
-    minNotation: null as number | null,
-    categorie: null as string | null,
-    nomProduit: null as string | null,
-    maxDelai: null as number | null,
-    devise: ''
-  };
+filters = {
+  minMontantTotal: null,
+  maxMontantTotal: null,
+  minNotation: null,
+  categorie: null,
+  nomProduit: null,
+  maxDelai: null,
+  devise: ''
+};
 
-  // Sorting
   currentSort: string = '';
 
   meilleurFournisseurId: number | null = null;
@@ -74,7 +73,7 @@ export class FournisseurListComponent implements OnInit {
             const facture = f.factures && f.factures.length > 0 ? f.factures[0] : undefined;
             return {
               ...f,
-              prix: facture?.prixproduit,
+              montantTotal: facture?.prixproduit, // 👈 renamed from prix
               delai: facture?.delaiLivraison,
               devise: facture ? 'TND' : undefined,
             };
@@ -91,12 +90,11 @@ export class FournisseurListComponent implements OnInit {
       });
   }
 
-onSortChange(event: Event): void {
-  const selectElement = event.target as HTMLSelectElement;
-  this.currentSort = selectElement.value;
-  this.loadFournisseurs();
-}
-
+  onSortChange(event: Event): void {
+    const selectElement = event.target as HTMLSelectElement;
+    this.currentSort = selectElement.value;
+    this.loadFournisseurs();
+  }
 
   applyFilters(): void {
     this.currentPage = 0;
@@ -110,10 +108,10 @@ onSortChange(event: Event): void {
     let bestId: number | null = null;
 
     for (const f of fournisseurs) {
-      const prix = f.prix ?? 0;
+      const montant = (f as any).montantTotal ?? 0; // 👈 changed from f.prix
       const delai = f.delai ?? 0;
       const notation = f.notation ?? 0;
-      const score = prix + delai - notation;
+      const score = montant + delai - notation;
 
       if (score < bestScore) {
         bestScore = score;
@@ -123,71 +121,75 @@ onSortChange(event: Event): void {
 
     return bestId;
   }
-exportExcel(): void {
-  const worksheet = XLSX.utils.json_to_sheet(this.fournisseurs.map(f => ({
-    ID: f.id,
-    Nom: f.nom,
-    Adresse: f.adresse,
-    Email: f.email,
-    Note: f.notation,
-    Prix: f.prix ?? 'N/A',
-    Délai: f.delai ?? 'N/A',
-    Devise: f.devise ?? 'N/A'
-  })));
 
-  const workbook = { Sheets: { 'Fournisseurs': worksheet }, SheetNames: ['Fournisseurs'] };
-  const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+  exportExcel(): void {
+    const worksheet = XLSX.utils.json_to_sheet(this.fournisseurs.map(f => ({
+      ID: f.id,
+      Nom: f.nom,
+      Adresse: f.adresse,
+      Email: f.email,
+      Note: f.notation,
+      MontantTotal: (f as any).montantTotal ?? 'N/A', // 👈 changed from Prix
+      Délai: f.delai ?? 'N/A',
+      Devise: f.devise ?? 'N/A'
+    })));
 
-  const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
-  FileSaver.saveAs(blob, 'fournisseurs.xlsx');
-}
-exportToPdf(): void {
-  const body = [
-    ['ID', 'Nom', 'Adresse', 'Email', 'Note', 'Prix', 'Délai', 'Devise'], // header row
-    ...this.fournisseurs.map(f => [
-      f.id,
-      f.nom,
-      f.adresse,
-      f.email,
-      f.notation ?? 'N/A',
-      f.prix ?? 'N/A',
-      f.delai ?? 'N/A',
-      f.devise ?? 'N/A',
-    ]),
-  ];
+    const workbook = { Sheets: { 'Fournisseurs': worksheet }, SheetNames: ['Fournisseurs'] };
+    const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
 
-  const docDefinition = {
-    content: [
-      { text: 'Liste des Fournisseurs', style: 'header' },
-      {
-        table: {
-          headerRows: 1,
-          widths: ['auto', '*', '*', '*', 'auto', 'auto', 'auto', 'auto'],
-          body: body,
-        },
-        layout: {
-          fillColor: (rowIndex: number) => {
-            return rowIndex === 0 ? '#4CAF50' : rowIndex % 2 === 0 ? '#f3f3f3' : null;
+    const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
+    FileSaver.saveAs(blob, 'fournisseurs.xlsx');
+  }
+
+  exportToPdf(): void {
+    const body = [
+      ['ID', 'Nom', 'Adresse', 'Email', 'Note', 'Montant Total', 'Délai', 'Devise'], // 👈 header changed
+      ...this.fournisseurs.map(f => [
+        f.id,
+        f.nom,
+        f.adresse,
+        f.email,
+        f.notation ?? 'N/A',
+        (f as any).montantTotal ?? 'N/A', // 👈 changed from prix
+        f.delai ?? 'N/A',
+        f.devise ?? 'N/A',
+      ]),
+    ];
+
+    const docDefinition = {
+      content: [
+        { text: 'Liste des Fournisseurs', style: 'header' },
+        {
+          table: {
+            headerRows: 1,
+            widths: ['auto', '*', '*', '*', 'auto', 'auto', 'auto', 'auto'],
+            body: body,
           },
-          hLineColor: () => '#ddd',
-          vLineColor: () => '#ddd',
-          paddingLeft: () => 8,
-          paddingRight: () => 8,
-          paddingTop: () => 4,
-          paddingBottom: () => 4,
+          layout: {
+            fillColor: (rowIndex: number) => {
+              return rowIndex === 0 ? '#4CAF50' : rowIndex % 2 === 0 ? '#f3f3f3' : null;
+            },
+            hLineColor: () => '#ddd',
+            vLineColor: () => '#ddd',
+            paddingLeft: () => 0,
+            paddingRight: () => 0,
+            paddingTop: () => 4,
+            paddingBottom: () => 4,
+          },
         },
+      ],
+      styles: {
+        header: { fontSize: 22, bold: true, margin: [0, 0, 0, 20], color: '#4CAF50' },
       },
-    ],
-    styles: {
-      header: { fontSize: 22, bold: true, margin: [0, 0, 0, 20], color: '#4CAF50' },
-    },
-    defaultStyle: {
-      fontSize: 10,
-    },
-  };
+      defaultStyle: {
+        fontSize: 10,
+      },
+    };
 
-  (pdfMake as any).createPdf(docDefinition).download('fournisseurs.pdf');
-}
+    (pdfMake as any).createPdf(docDefinition).download('fournisseurs.pdf');
+  }
+
+
 
 
   deleteFournisseur(id: number): void {

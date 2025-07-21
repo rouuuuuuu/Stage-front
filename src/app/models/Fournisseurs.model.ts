@@ -1,9 +1,9 @@
 export interface Facture {
   id: number;
-  date: string; // or Date if you parse it
+  date: string; // or Date if you're parsing it
   montantTotal: number;
   delaiLivraison: number;
-  prixproduit: number;
+  prixproduit: number; // keep this if you're still using it in the backend logic
 }
 
 export interface Fournisseur {
@@ -15,9 +15,10 @@ export interface Fournisseur {
   num?: number;
   fax?: number;
 
-  prix?: number;
+  montantTotal?: number; // 🔥 Replaces prix
   delai?: number;
   devise?: string;
 
-  factures?: Facture[]; // ADD THIS to match backend data
+  montantTotalDernier?: any; 
+  factures?: Facture[];
 }

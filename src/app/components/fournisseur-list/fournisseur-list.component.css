@@ -106,7 +106,7 @@ label[for="sort-select"] {
 }
 .filters-group .form-control,
 .filters-group .form-select {
-  width: 200px; /* adjust to taste: 140–180 is usually nice */
+  width: 200px; 
   min-width: 120px;
   max-width: 100%;
 }
