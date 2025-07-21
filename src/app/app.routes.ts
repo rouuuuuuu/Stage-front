@@ -6,6 +6,7 @@ import { ProduitListComponent } from './components/produit-list/produit-list.com
 import { UploadComponent } from './components/upload/upload.component';
 import { ConsultationFormComponent } from './components/consultation-form/consultation-form.component';
 import { ConsultationListComponent } from './components/consultation-list/consultation-list.component';
+import { HistoriqueConsultationsComponent } from './historique/historique.component';
 
 export const routes: Routes = [
   { path: '', component: LoginComponent }, // <== LOGIN as the main route now
@@ -16,4 +17,6 @@ export const routes: Routes = [
 
   { path: 'consultation', component: ConsultationFormComponent },
   { path: 'consultations', component: ConsultationListComponent },
+   { path: 'historique', component: HistoriqueConsultationsComponent },  // <== here it is
+
 ];

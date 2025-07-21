@@ -1,3 +1,4 @@
+<!-- consultation-list.component.html -->
 <div class="container">
   <h2>Consultations enregistrées</h2>
 
@@ -13,6 +14,7 @@
     <thead>
       <tr>
         <th>ID</th>
+        <th>Client</th>
         <th>Description</th>
         <th>Produits demandés</th>
         <th>Date de création</th>
@@ -21,6 +23,7 @@
     <tbody>
       <tr *ngFor="let consultation of filteredConsultations">
         <td>{{ consultation.id }}</td>
+        <td>{{ consultation.client?.nom || '—' }}</td>
         <td>{{ consultation.description }}</td>
         <td>
           <ul>

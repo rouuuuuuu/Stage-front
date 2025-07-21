@@ -33,12 +33,12 @@ export class UploadComponent {
         if (event.type === HttpEventType.UploadProgress && event.total) {
           this.uploadProgress = Math.round((100 * event.loaded) / event.total);
         } else if (event.type === HttpEventType.Response) {
-          this.uploadMessage = 'Fichier uploadé avec succès! 💖';
+          this.uploadMessage = 'Fichier uploadé avec succès! ';
           this.resetUpload();
         }
       },
       error: (err) => {
-        this.uploadMessage = `Erreur: ${err.error?.message || 'Échec de l\'upload 😓'}`;
+        this.uploadMessage = `Erreur: ${err.error?.message || 'Échec de l\'upload '}`;
         this.resetUpload();
       }
     });

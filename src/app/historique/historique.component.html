@@ -1,0 +1,42 @@
+<div class="container">
+  <h2>Historique des consultations</h2>
+
+  <input
+    type="text"
+    placeholder="Filtrer par client, produit ou description..."
+    [(ngModel)]="searchTerm"
+    (input)="onSearch()"
+    class="search-input"
+  />
+
+  <table *ngIf="filteredHistory.length; else noData">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Client</th>
+        <th>Description</th>
+        <th>Produits</th>
+        <th>Date Création</th>
+        <th>Facture (Date)</th>
+        <th>Total</th>
+        <th>Devise</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let h of filteredHistory">
+        <td>{{ h.consultationId }}</td>
+        <td>{{ h.clientName }}</td>
+        <td>{{ h.description }}</td>
+        <td>{{ h.produitsDemandes.join(', ') }}</td>
+        <td>{{ h.dateCreation | date:'short' }}</td>
+        <td>{{ h.factureDate ? (h.factureDate | date:'short') : '—' }}</td>
+        <td>{{ h.factureMontantTotal || '—' }}</td>
+        <td>{{ h.factureDevise || '—' }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <ng-template #noData>
+    <p class="no-data">Aucun historique trouvé.</p>
+  </ng-template>
+</div>
