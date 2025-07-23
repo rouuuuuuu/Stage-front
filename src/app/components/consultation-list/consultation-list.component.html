@@ -38,4 +38,12 @@
   <ng-template #noData>
     <p class="no-data">Aucune consultation trouvée.</p>
   </ng-template>
+
+  <!-- Pagination controls -->
+  <div class="pagination-controls" style="margin-top: 20px; text-align: center;">
+    <button (click)="previousPage()" [disabled]="currentPage === 0">Précédent</button>
+    <span style="margin: 0 10px;">Page {{ currentPage + 1 }}</span>
+    <button (click)="nextPage()" [disabled]="(currentPage + 1) * pageSize >= totalConsultations">Suivant</button>
+  </div>
 </div>
+

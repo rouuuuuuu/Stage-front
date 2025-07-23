@@ -1,16 +1,27 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
 import { HttpClient, HttpEvent, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Produit } from '../models/Produits.model';
+import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({ providedIn: 'root' })
 export class ApiService {
   private baseUrl = 'http://localhost:8080/api';
+  private isBrowser: boolean;
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) {
+    this.isBrowser = isPlatformBrowser(this.platformId);
+  }
 
   private getAuthHeaders(): HttpHeaders {
-    const token = localStorage.getItem('token');
+    let token = null;
+    if (this.isBrowser) {
+      token = localStorage.getItem('token');
+    }
+
     return token ? new HttpHeaders({
       'Authorization': `Bearer ${token}`,
       'Accept': 'application/json'
@@ -19,24 +30,27 @@ export class ApiService {
     });
   }
 
-   // Upload file with JWT auth header included
+  // Upload file with JWT auth header included
   uploadFile(file: File): Observable<HttpEvent<any>> {
-  const formData = new FormData();
-  formData.append('file', file);
+    const formData = new FormData();
+    formData.append('file', file);
 
-  const token = localStorage.getItem('token');  // get JWT token from storage
+    let token = null;
+    if (this.isBrowser) {
+      token = localStorage.getItem('token');
+    }
 
-  const headers = new HttpHeaders({
-    'Accept': 'application/json',
-    ...(token && { 'Authorization': `Bearer ${token}` })  // add Authorization if token exists
-  });
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      ...(token && { 'Authorization': `Bearer ${token}` })
+    });
 
-  return this.http.post(`${this.baseUrl}/files/upload`, formData, {
-    headers,
-    reportProgress: true,
-    observe: 'events'
-  });
-}
+    return this.http.post(`${this.baseUrl}/files/upload`, formData, {
+      headers,
+      reportProgress: true,
+      observe: 'events'
+    });
+  }
 
   // Autocomplétion de produits
   searchProduits(query: string): Observable<Produit[]> {
@@ -49,9 +63,9 @@ export class ApiService {
   }
 
   // Envoi de consultation client
-  postConsultation(dto: any) {
+  postConsultation(clientId: number, dto: any) {
     const headers = this.getAuthHeaders();
-    return this.http.post(`${this.baseUrl}/consultations`, dto, { headers });
+    return this.http.post(`${this.baseUrl}/consultations/client/${clientId}`, dto, { headers });
   }
 
   // Ajouter un nouveau produit
@@ -61,14 +75,16 @@ export class ApiService {
   }
 
   // Liste des consultations enregistrées
-  getConsultations(clientId?: number): Observable<any[]> {
-    let url = `${this.baseUrl}/consultations`;
-    if (clientId) {
-      url += `?clientId=${clientId}`;
-    }
-    const headers = this.getAuthHeaders();
-    return this.http.get<any[]>(url, { headers });
+getConsultations(page: number = 0, size: number = 5, searchTerm: string = ''): Observable<any> {
+  let url = `${this.baseUrl}/consultations?page=${page}&size=${size}`;
+  if (searchTerm && searchTerm.trim() !== '') {
+    url += `&search=${encodeURIComponent(searchTerm.trim())}`;
   }
+  const headers = this.getAuthHeaders();
+  return this.http.get<any>(url, { headers });
+}
+
+
 
   // Login
   login(email: string) {
@@ -81,9 +97,10 @@ export class ApiService {
     const headers = this.getAuthHeaders();
     return this.http.get<any[]>(`${this.baseUrl}/factures/stats?${params}`, { headers });
   }
+
   getConsultationHistory(page: number = 0, size: number = 50) {
-  return this.http.get<any>(`/api/consultations/history?page=${page}&size=${size}`);
-}
+    return this.http.get<any>(`/api/consultations/history?page=${page}&size=${size}`);
+  }
 
   getFournisseurs(): Observable<any[]> {
     const headers = this.getAuthHeaders();
@@ -95,7 +112,4 @@ export class ApiService {
     const headers = this.getAuthHeaders();
     return this.http.get<any[]>(`${this.baseUrl}/factures`, { headers });
   }
-
-
-
 }

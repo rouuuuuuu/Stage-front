@@ -120,7 +120,11 @@ onClickOutside(event: MouseEvent) {
 
     console.log('DTO envoyé au backend:', dto);
 
-    this.apiService.postConsultation(dto).subscribe({
+    this.apiService.postConsultation(this.clientId, {
+  description: this.consultationForm.value.description,
+  produitsDemandes: this.produitsSelectionnes.map(p => ({ id: p.id }))
+})
+.subscribe({
       next: res => {
         console.log('Consultation envoyée avec succès !', res);
         this.successMessage = 'Consultation envoyée avec succès !';

@@ -78,3 +78,39 @@ td ul {
   font-style: italic;
   margin-top: 40px;
 }
+.pagination-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.pagination-controls button {
+  background-color: #4a90e2;
+  border: none;
+  color: white;
+  padding: 10px 22px;
+  font-weight: 600;
+  font-size: 1rem;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  box-shadow: 0 4px 8px rgba(74,144,226,0.3);
+}
+
+.pagination-controls button:hover:not(:disabled) {
+  background-color: #357ABD;
+}
+
+.pagination-controls button:disabled {
+  background-color: #a6c1f7;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.pagination-controls span {
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: #2c3e50;
+}

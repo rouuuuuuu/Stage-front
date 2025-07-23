@@ -21,47 +21,49 @@ export class ConsultationListComponent implements OnInit {
   filteredConsultations: any[] = [];
   searchTerm: string = '';
 
+  currentPage: number = 0;
+  pageSize: number = 5;
+  totalConsultations: number = 0; // We'll get this from the backend if available
+
   constructor(
     private apiService: ApiService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
   ngOnInit(): void {
-    this.loadConsultations();
+    this.loadConsultations(this.currentPage);
   }
 
-  loadConsultations() {
-  this.apiService.getConsultations().subscribe({
+  loadConsultations(page: number, searchTerm: string = '') {
+  this.apiService.getConsultations(page, this.pageSize, searchTerm).subscribe({
     next: (data: any) => {
-      console.log('All consultations from API:', data);
-
       if (data && Array.isArray(data.content)) {
         this.consultations = data.content;
-        this.filteredConsultations = [...data.content];
+        this.filteredConsultations = [...data.content]; // maybe no need if you just display consultations directly
+        this.totalConsultations = data.totalElements ?? data.content.length;
+        this.currentPage = page;
       } else {
-        console.error("Unexpected response format:", data);
-        this.consultations = [];
-        this.filteredConsultations = [];
+          console.error('Unexpected response format:', data);
+          this.consultations = [];
+          this.filteredConsultations = [];
+          this.totalConsultations = 0;
+        }
+      },
+      error: (err) => {
+        console.error('Erreur chargement consultations', err);
+        if (err.status === 403 && isPlatformBrowser(this.platformId)) {
+          alert("Accès refusé : vérifie les autorisations backend !");
+        }
       }
-    },
-    error: (err) => {
-      console.error('Erreur chargement consultations', err);
-      if (err.status === 403 && isPlatformBrowser(this.platformId)) {
-        alert("Accès refusé : vérifie les autorisations backend !");
-      }
-    }
-  });
-}
-
+    });
+  }
 
   onSearch() {
     const term = this.searchTerm.toLowerCase().trim();
-
     if (!term) {
       this.filteredConsultations = this.consultations;
       return;
     }
-
     this.filteredConsultations = this.consultations.filter(c => {
       const clientName = c.client?.nom?.toLowerCase() || '';
       const descMatch = c.description?.toLowerCase().includes(term);
@@ -70,5 +72,17 @@ export class ConsultationListComponent implements OnInit {
       );
       return clientName.includes(term) || descMatch || produitsMatch;
     });
+  }
+
+  nextPage() {
+    if ((this.currentPage + 1) * this.pageSize < this.totalConsultations) {
+      this.loadConsultations(this.currentPage + 1);
+    }
+  }
+
+  previousPage() {
+    if (this.currentPage > 0) {
+      this.loadConsultations(this.currentPage - 1);
+    }
   }
 }
